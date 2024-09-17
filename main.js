@@ -28,16 +28,14 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 function createWindow () {
   const { view, roomType } = program.opts();
-  const titleExtraOpts = [
+  const titleInfo = [
     roomType || null
   ].filter(Boolean).join(',');
 
   const win = new BrowserWindow({
     width: 1280,
     height: 720,
-    // Vue is overwriting the title, this is just wasting cpu cycles.
-    // But then again, we're using electron so who fucking cares lmao
-    title: `VDO.Ninja Viewer - ${view === 'audio' ? 'Audio' : 'Video'} View ${titleExtraOpts.length ? `(${titleExtraOpts})` : ''}`,
+    title: `VDO.Ninja Viewer - ${view === 'audio' ? 'Audio' : 'Video'} View ${titleInfo.length ? `(${titleInfo})` : ''}`,
     fullscreen: view === 'video',
     webPreferences: {
       backgroundThrottling: false,
@@ -49,6 +47,12 @@ function createWindow () {
         'applyDelay:false', // TODO: implement when we need this
       ],
     },
+  });
+
+  // hack and a half
+  // https://www.electronjs.org/docs/latest/api/browser-window#event-page-title-updated
+  win.on('page-title-updated', (event) => {
+    event.preventDefault();
   });
 
   win.loadURL(`http://localhost:9090/bundles/nodecg-vdoninja/graphics/${view}-view/main.html`).catch(console.error);
