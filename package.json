@@ -7,8 +7,8 @@
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
-    "make": "electron-forge make",
-    "make:win": "electron-forge make --platform win32"
+    "package:win": "electron-forge package --platform win32",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
