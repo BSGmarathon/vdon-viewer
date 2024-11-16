@@ -26,7 +26,26 @@ program.parse();
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-function createWindow () {
+async function sleep(seconds) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}
+
+// Somwhow loadURL is a bit bugged, this seems to fix it on windows
+// https://github.com/electron/electron/issues/28208#issuecomment-1129612599
+async function attemptLoad(win, view) {
+  let loaded = false;
+
+  do {
+    try {
+      await win.loadURL(`http://localhost:9090/bundles/nodecg-vdoninja/graphics/${view}-view/main.html`);
+      loaded = true;
+    } catch (err) {
+      await sleep(5);
+    }
+  } while (!loaded);
+}
+
+async function createWindow () {
   const { view, roomType } = program.opts();
   const titleInfo = [
     roomType || null
@@ -55,16 +74,19 @@ function createWindow () {
     event.preventDefault();
   });
 
-  win.loadURL(`http://localhost:9090/bundles/nodecg-vdoninja/graphics/${view}-view/main.html`).catch(console.error);
+  await attemptLoad(win, view);
+  // Still nothing? Try again after 10 seconds
+  await sleep(10);
+  await attemptLoad(win, view);
 }
 
 app.whenReady().then(() => {
-  createWindow();
+  createWindow().catch(console.log);
 
   // Specific macos stuff, doubt we ever need this.
-  app.on('activate', () => {
+  app.once('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      createWindow().catch(console.log);
     }
   });
 });
