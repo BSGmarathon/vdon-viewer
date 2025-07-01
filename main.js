@@ -15,7 +15,7 @@ program
   )
   .addOption(
     new Option(
-      '-rt, --room-type <room-type>',
+      '--rt, --room-type <room-type>',
       'The key of the active room type you wish to load.'
     )
       .default('active')
