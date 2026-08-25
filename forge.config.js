@@ -2,18 +2,15 @@ const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
+  outDir: 'out/',
   packagerConfig: {
     asar: true,
   },
-  rebuildConfig: {},
+  // rebuildConfig: {},
   makers: [
     {
-      name: '@electron-forge/maker-squirrel',
-      config: {},
-    },
-    {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin', 'win32', 'linux'],
+      // platforms: ['win32', 'linux'],
     },
   ],
   plugins: [
