@@ -45,7 +45,7 @@ async function attemptLoad(win, view) {
   } while (!loaded);
 }
 
-async function createWindow () {
+async function createWindow() {
   const { view, roomType } = program.opts();
   const titleInfo = [
     roomType || null
@@ -79,6 +79,12 @@ async function createWindow () {
   await sleep(10);
   await attemptLoad(win, view);
 }
+
+// No longer needed cuz of new electron version
+// app.commandLine.appendSwitch(
+//   'disable-features',
+//   'AudioServiceOutOfProcess'
+// );
 
 app.whenReady().then(() => {
   createWindow().catch(console.log);
